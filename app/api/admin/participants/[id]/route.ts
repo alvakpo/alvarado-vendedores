@@ -260,7 +260,7 @@ export async function PATCH(
   return NextResponse.json({ participant: updated });
 }
 
-// DELETE (soft delete - set inactive)
+// DELETE participant (admin only)
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -272,11 +272,28 @@ export async function DELETE(
 
   const { id } = await params;
 
+  // Fetch participant to check for associated user_id
+  const { data: participant } = await supabaseAdmin
+    .from("participants")
+    .select("user_id")
+    .eq("id", id)
+    .single();
+
+  // Delete participant
   const { error } = await supabaseAdmin
     .from("participants")
-    .update({ status: "inactive", updated_at: new Date().toISOString() })
+    .delete()
     .eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Delete user record if exists
+  if (participant?.user_id) {
+    await supabaseAdmin
+      .from("users")
+      .delete()
+      .eq("id", participant.user_id);
+  }
+
   return NextResponse.json({ success: true });
 }

@@ -169,6 +169,28 @@ function ParticipantModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    if (!participant?.id) return;
+    setDeleting(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/admin/participants/${participant.id}`, { method: "DELETE" });
+      if (res.ok) {
+        onSave();
+        onClose();
+      } else {
+        const data = await res.json();
+        setError(data.error || "Error al eliminar");
+      }
+    } catch {
+      setError("Error de conexión");
+    }
+    setDeleting(false);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -385,7 +407,45 @@ function ParticipantModal({
             </div>
           )}
 
-          <div style={{ display: "flex", gap: 10 }}>
+          {isEdit && confirmDelete && (
+            <div style={{ marginBottom: 14, padding: "12px 14px", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#f87171", marginBottom: 8 }}>
+                ¿Confirmás eliminar a {participant.first_name} {participant.last_name}?
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  type="button"
+                  className="btn-danger"
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  style={{ flex: 1, padding: "8px 12px", fontSize: 12 }}
+                >
+                  {deleting ? "Eliminando..." : "Sí, eliminar definitivamente"}
+                </button>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setConfirmDelete(false)}
+                  style={{ flex: 1, padding: "8px 12px", fontSize: 12 }}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            {isEdit && !confirmDelete && (
+              <button
+                type="button"
+                className="btn-danger"
+                onClick={() => setConfirmDelete(true)}
+                style={{ padding: "10px 14px", fontSize: 13 }}
+                title="Eliminar vendedor"
+              >
+                🗑️ Eliminar
+              </button>
+            )}
             <button type="button" className="btn-secondary" onClick={onClose} style={{ flex: 1 }}>
               Cancelar
             </button>

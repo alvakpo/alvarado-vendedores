@@ -59,72 +59,75 @@ body {
   color: var(--blue-neon);
 }
 
-/* Progress bar glow animation */
-@keyframes progress-glow {
-  0%, 100% { box-shadow: 0 0 6px var(--blue-glow), 0 0 12px var(--blue-glow); }
-  50% { box-shadow: 0 0 10px var(--blue-glow), 0 0 20px var(--blue-glow), 0 0 30px rgba(14,165,233,0.2); }
+/* Progress bar neon animations */
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 6px rgba(56, 189, 248, 0.6),
+      0 0 14px rgba(14, 165, 233, 0.4);
+  }
+  50% {
+    box-shadow: 
+      0 0 10px rgba(125, 211, 252, 0.9),
+      0 0 22px rgba(56, 189, 248, 0.7);
+  }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+@keyframes tip-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 6px #ffffff,
+      0 0 12px #38bdf8,
+      0 0 20px #0ea5e9,
+      0 0 30px #0ea5e9;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    box-shadow: 
+      0 0 9px #ffffff,
+      0 0 16px #7dd3fc,
+      0 0 26px #38bdf8,
+      0 0 36px #0ea5e9;
+    transform: translateY(-50%) scale(1.15);
+  }
 }
 
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.4s ease forwards;
-}
-
-.animate-slide-in {
-  animation: slideIn 0.3s ease forwards;
-}
-
-/* Progress bar */
+/* Progress bar container */
 .progress-bar {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 999px;
   background: rgba(14, 165, 233, 0.08);
-  border: 1px solid rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.22);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #0ea5e9, #38bdf8, #7dd3fc);
+  background: linear-gradient(90deg, #0284c7 0%, #0ea5e9 50%, #38bdf8 80%, #7dd3fc 100%);
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  animation: neon-pulse 2.5s ease-in-out infinite;
 }
 
-.progress-fill.completed {
-  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
-  animation: progress-glow 2s ease-in-out infinite;
-}
-
+/* Glowing neon tip at the exact percentage point */
 .progress-fill::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
-  animation: shimmer 2.5s infinite;
-  border-radius: inherit;
+  top: 50%;
+  right: -2px;
+  width: 6px;
+  height: 150%;
+  border-radius: 999px;
+  background: #ffffff;
+  z-index: 5;
+  animation: tip-glow 1.8s ease-in-out infinite;
+}
+
+.progress-fill[style*="width: 0%"]::after,
+.progress-fill[style*="width:0%"]::after {
+  display: none;
 }
 
 /* Participant row */
