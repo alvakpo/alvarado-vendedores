@@ -246,9 +246,31 @@ function ParticipantModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20, color: "var(--text-primary)" }}>
-          {isEdit ? "Editar Participante" : "Nuevo Participante"}
-        </h2>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+          <h2 style={{ fontSize: 17, fontWeight: 700, color: "var(--text-primary)" }}>
+            {isEdit ? "Editar Participante" : "Nuevo Participante"}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid var(--border)",
+              color: "var(--text-secondary)",
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              fontSize: 16,
+              lineHeight: 1,
+            }}
+          >
+            ✕
+          </button>
+        </div>
 
         {!isEdit && (
           <div
